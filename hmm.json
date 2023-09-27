@@ -1,21 +1,14 @@
 {
   "dependencies": [
     {
-      "name": "SScript",
+      "name": "lime",
       "type": "haxelib",
       "version": null
     },
     {
-      "name": "away3d",
+      "name": "openfl",
       "type": "haxelib",
       "version": null
-    },
-    {
-      "name": "discord_rpc",
-      "type": "git",
-      "dir": null,
-      "ref": "master",
-      "url": "https://github.com/Aidan63/linc_discord-rpc"
     },
     {
       "name": "flixel",
@@ -38,7 +31,12 @@
       "version": null
     },
     {
-      "name": "flixel-uio",
+      "name": "hxcpp",
+      "type": "haxelib",
+      "version": null
+    },
+    {
+      "name": "tjson",
       "type": "haxelib",
       "version": null
     },
@@ -48,12 +46,7 @@
       "version": null
     },
     {
-      "name": "hxcodec",
-      "type": "haxelib",
-      "version": null
-    },
-    {
-      "name": "hxcpp",
+      "name": "SScript",
       "type": "haxelib",
       "version": null
     },
@@ -63,14 +56,11 @@
       "version": null
     },
     {
-      "name": "install",
-      "type": "haxelib",
-      "version": "lime"
-    },
-    {
-      "name": "lime",
-      "type": "haxelib",
-      "version": null
+      "name": "discord_rpc",
+      "type": "git",
+      "dir": null,
+      "ref": "master",
+      "url": "https://github.com/Aidan63/linc_discord-rpc"
     },
     {
       "name": "linc_luajit",
@@ -78,21 +68,6 @@
       "dir": null,
       "ref": "master",
       "url": "https://github.com/superpowers04/linc_luajit"
-    },
-    {
-      "name": "openfl",
-      "type": "haxelib",
-      "version": null
-    },
-    {
-      "name": "sscript",
-      "type": "haxelib",
-      "version": null
-    },
-    {
-      "name": "tjson",
-      "type": "haxelib",
-      "version": null
     }
   ]
 }
