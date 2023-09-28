@@ -1,7 +1,7 @@
 # Blender MTL File: 'getscop map.blend'
 # Material Count: 1
 
-newmtl material_atlas_00005_1
+newmtl material_atlas_00001_1
 Ns 250.000000
 Ka 1.000000 1.000000 1.000000
 Kd 0.800000 0.800000 0.800000
@@ -10,5 +10,5 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd C:\\Users\\Aimee\\Downloads\\Getscop Map\\Atlas_00005.png
-map_d C:\\Users\\Aimee\\Downloads\\Getscop Map\\Atlas_00005.png
+map_Kd Atlas_00001.png
+map_d Atlas_00001.png

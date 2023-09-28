@@ -1,135 +1,134 @@
 package states.stages;
 
-import away3d.*;
+import openfl.display.BitmapData;
+import away3d.textures.BitmapTexture;
+import away3d.entities.Sprite3D;
+import openfl.utils.AssetType;
+import away3d.library.assets.Asset3DType;
+import away3d.events.Asset3DEvent;
+import away3d.loaders.parsers.OBJParser;
+import away3d.loaders.Loader3D;
+import openfl.Assets;
+import away3d.loaders.misc.AssetLoaderContext;
+import away3d.utils.Cast;
+import away3d.materials.TextureMaterial;
+import away3d.materials.lightpickers.StaticLightPicker;
+import away3d.lights.DirectionalLight;
+import away3d.entities.Mesh;
 import flx3D.FlxView3D;
-import states.stages.objects.*;
 import backend.BaseStage;
 
 class Getscop extends BaseStage
 {
-	// If you're moving your stage from PlayState to a stage file,
-	// you might have to rename some variables if they're missing, for example: camZooming -> game.camZooming
-
+	var stage:StageMesh;
 	override function create()
 	{
+		camGame.visible = false;
 
+		stage = new StageMesh();
+		stage.scrollFactor.set(0, 0);
+		stage.cameras = [game.camBehind];
+		add(stage);
+
+		var originalBitmap = Assets.getBitmapData(Paths.getPath('models/getscop/helpme.png', AssetType.IMAGE, "shared"));
+
+		// Calculate the next power of 2 dimensions
+		var powerOfTwoWidth:Int = nextPowerOfTwo(originalBitmap.width);
+		var powerOfTwoHeight:Int = nextPowerOfTwo(originalBitmap.height);
+		
+		// Create a new bitmap with transparent background and power of 2 dimensions
+		var newBitmapData:BitmapData = new BitmapData(powerOfTwoWidth, powerOfTwoHeight, true, 0x00000000);
+		
+		// Draw the original bitmap onto the new bitmap with transparency
+		newBitmapData.copyPixels(originalBitmap, originalBitmap.rect, new openfl.geom.Point(), null, null, true);
+
+		var material = new TextureMaterial(new BitmapTexture(newBitmapData));
+		var character:Sprite3D = new Sprite3D(material, 256, 256);
+		character.z = 600;
+		stage.view.scene.addChild(character);
 	}
 	
-	override function createPost()
-	{
-		// Use this function to layer things above characters!
-	}
-
-	override function update(elapsed:Float)
-	{
-		// Code here
-	}
-
-	
-	override function countdownTick(count:Countdown, num:Int)
-	{
-		switch(count)
-		{
-			case THREE: //num 0
-			case TWO: //num 1
-			case ONE: //num 2
-			case GO: //num 3
-			case START: //num 4
+	function nextPowerOfTwo(value:Int):Int {
+		var result:Int = 1;
+		while (result < value) {
+			result *= 2;
 		}
-	}
-
-	// Steps, Beats and Sections:
-	//    curStep, curDecStep
-	//    curBeat, curDecBeat
-	//    curSection
-	override function stepHit()
-	{
-		// Code here
-	}
-	override function beatHit()
-	{
-		// Code here
-	}
-	override function sectionHit()
-	{
-		// Code here
-	}
-
-	// Substates for pausing/resuming tweens and timers
-	override function closeSubState()
-	{
-		if(paused)
-		{
-			//timer.active = true;
-			//tween.active = true;
-		}
-	}
-
-	override function openSubState(SubState:flixel.FlxSubState)
-	{
-		if(paused)
-		{
-			//timer.active = false;
-			//tween.active = false;
-		}
-	}
-
-	// For events
-	override function eventCalled(eventName:String, value1:String, value2:String, flValue1:Null<Float>, flValue2:Null<Float>, strumTime:Float)
-	{
-		switch(eventName)
-		{
-			case "My Event":
-		}
-	}
-	override function eventPushed(event:objects.Note.EventNote)
-	{
-		// used for preloading assets used on events that doesn't need different assets based on its values
-		switch(event.event)
-		{
-			case "My Event":
-				//precacheImage('myImage') //preloads images/myImage.png
-				//precacheSound('mySound') //preloads sounds/mySound.ogg
-				//precacheMusic('myMusic') //preloads music/myMusic.ogg
-		}
-	}
-	override function eventPushedUnique(event:objects.Note.EventNote)
-	{
-		// used for preloading assets used on events where its values affect what assets should be preloaded
-		switch(event.event)
-		{
-			case "My Event":
-				switch(event.value1)
-				{
-					// If value 1 is "blah blah", it will preload these assets:
-					case 'blah blah':
-						//precacheImage('myImageOne') //preloads images/myImageOne.png
-						//precacheSound('mySoundOne') //preloads sounds/mySoundOne.ogg
-						//precacheMusic('myMusicOne') //preloads music/myMusicOne.ogg
-
-					// If value 1 is "coolswag", it will preload these assets:
-					case 'coolswag':
-						//precacheImage('myImageTwo') //preloads images/myImageTwo.png
-						//precacheSound('mySoundTwo') //preloads sounds/mySoundTwo.ogg
-						//precacheMusic('myMusicTwo') //preloads music/myMusicTwo.ogg
-					
-					// If value 1 is not "blah blah" or "coolswag", it will preload these assets:
-					default:
-						//precacheImage('myImageThree') //preloads images/myImageThree.png
-						//precacheSound('mySoundThree') //preloads sounds/mySoundThree.ogg
-						//precacheMusic('myMusicThree') //preloads music/myMusicThree.ogg
-				}
-		}
+		return result;
 	}
 }
 
 class StageMesh extends FlxView3D {
-	var mesh:Mesh;
-	var material:ColorMaterial;
+	var meshes:Array<Mesh> = [];
+
+	var light:DirectionalLight;
+	var lightPicker:StaticLightPicker;
 
 	public function new() {
 		super();
 
-		material = new ColorMaterial(0xFFFF0000);
+		light = new DirectionalLight();
+		light.ambient = 0.5;
+		light.z -= 10;
+
+		view.scene.addChild(light);
+
+		lightPicker = new StaticLightPicker([light]);
+
+		for (meshName in ['baseplate', 'family', 'speakers', 'stairs', 'treehouse', 'quagmires']) {
+			var material = new TextureMaterial(Cast.bitmapTexture(Paths.getPath('models/getscop/$meshName.png', AssetType.IMAGE, "shared")));
+			material.lightPicker = lightPicker;
+	
+			var _model = Assets.getBytes(Paths.getPath('models/getscop/$meshName.obj', AssetType.BINARY, "shared"));
+			var assetLoaderContext = new AssetLoaderContext();
+			assetLoaderContext.mapUrlToData('$meshName.mtl', Assets.getBytes(Paths.getPath('models/getscop/$meshName.mtl', AssetType.BINARY, "shared")));
+	
+			var _loader = new Loader3D();
+			_loader.loadData(_model, assetLoaderContext, null, new OBJParser());
+			_loader.addEventListener(Asset3DEvent.ASSET_COMPLETE, (event:Asset3DEvent) -> {
+				if (event.asset.assetType == Asset3DType.MESH) {
+					var mesh:Mesh = cast(event.asset, Mesh);
+					mesh.scale(5);
+					mesh.material = material;
+					meshes.push(mesh);
+				}
+			});
+	
+			view.scene.addChild(_loader);
+		}
 	}	
+
+	override function update(elapsed:Float) {
+		super.update(elapsed);
+
+		var move = 10;
+
+		if (FlxG.keys.justPressed.S)
+			moveMesh(0, 0, move);
+		if (FlxG.keys.justPressed.W)
+			moveMesh(0, 0, -move);
+
+		if (FlxG.keys.justPressed.A)
+			moveMesh(move, 0, 0);
+		if (FlxG.keys.justPressed.D)
+			moveMesh(-move, 0, 0);
+
+		if (FlxG.keys.justPressed.Q)
+			moveMesh(0, move, 0);
+		if (FlxG.keys.justPressed.E)
+			moveMesh(0, -move, 0);
+	}
+
+	function moveMesh(x:Float, y:Float, z:Float) {
+		for (i in meshes) {
+			i.x += x;
+			i.y += y;
+			i.z += z;
+
+			trace(i.x, i.y, i.z);
+		}
+	}
+
+	override function destroy() {
+		super.destroy();
+	}
 }

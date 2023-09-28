@@ -204,6 +204,7 @@ class PlayState extends MusicBeatState
 	public var iconP1:HealthIcon;
 	public var iconP2:HealthIcon;
 	public var camHUD:FlxCamera;
+	public var camBehind:FlxCamera;
 	public var camGame:FlxCamera;
 	public var camOther:FlxCamera;
 	public var cameraSpeed:Float = 1;
@@ -297,18 +298,26 @@ class PlayState extends MusicBeatState
 		cpuControlled = ClientPrefs.getGameplaySetting('botplay');
 
 		// var gameCam:FlxCamera = FlxG.camera;
+		camBehind = new FlxCamera();
 		camGame = new FlxCamera();
 		camHUD = new FlxCamera();
 		camOther = new FlxCamera();
+		camGame.bgColor.alpha = 0;
 		camHUD.bgColor.alpha = 0;
 		camOther.bgColor.alpha = 0;
 
-		FlxG.cameras.reset(camGame);
+		FlxG.cameras.reset(camBehind);
+		FlxG.cameras.add(camGame, true);
 		FlxG.cameras.add(camHUD, false);
 		FlxG.cameras.add(camOther, false);
 		grpNoteSplashes = new FlxTypedGroup<NoteSplash>();
 
 		FlxG.cameras.setDefaultDrawTarget(camGame, true);
+		
+		@:privateAccess
+		FlxG.cameras.defaults.remove(camBehind);
+		FlxG.camera = camGame;
+
 		CustomFadeTransition.nextCamera = camOther;
 
 		persistentUpdate = true;

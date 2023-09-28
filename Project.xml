@@ -102,6 +102,7 @@
 
 	<!-- _______________________________ Libraries ______________________________ -->
 
+	<haxelib name="away3d" />
 	<haxelib name="flixel" />
 	<haxelib name="flixel-ui" />
 	<haxelib name="flixel-addons" />
