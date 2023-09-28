@@ -77,6 +77,7 @@ class StageMesh extends FlxView3D {
 		for (meshName in ['baseplate', 'family', 'speakers', 'stairs', 'treehouse', 'quagmires']) {
 			var material = new TextureMaterial(Cast.bitmapTexture(Paths.getPath('models/getscop/$meshName.png', AssetType.IMAGE, "shared")));
 			material.lightPicker = lightPicker;
+			material.alphaBlending = true;
 	
 			var _model = Assets.getBytes(Paths.getPath('models/getscop/$meshName.obj', AssetType.BINARY, "shared"));
 			var assetLoaderContext = new AssetLoaderContext();
@@ -100,32 +101,32 @@ class StageMesh extends FlxView3D {
 	override function update(elapsed:Float) {
 		super.update(elapsed);
 
-		var move = 10;
+		var move = 3;
 
-		if (FlxG.keys.justPressed.S)
-			moveMesh(0, 0, move);
-		if (FlxG.keys.justPressed.W)
-			moveMesh(0, 0, -move);
+		if (FlxG.keys.pressed.S)
+			view.camera.z -= move;
+		if (FlxG.keys.pressed.W)
+			view.camera.z += move;
 
-		if (FlxG.keys.justPressed.A)
-			moveMesh(move, 0, 0);
-		if (FlxG.keys.justPressed.D)
-			moveMesh(-move, 0, 0);
+		if (FlxG.keys.pressed.A)
+			view.camera.x -= move;
+		if (FlxG.keys.pressed.D)
+			view.camera.x += move;
 
-		if (FlxG.keys.justPressed.Q)
-			moveMesh(0, move, 0);
-		if (FlxG.keys.justPressed.E)
-			moveMesh(0, -move, 0);
-	}
+		if (FlxG.keys.pressed.Q)
+			view.camera.y -= move;
+		if (FlxG.keys.pressed.E)
+			view.camera.y += move;
 
-	function moveMesh(x:Float, y:Float, z:Float) {
-		for (i in meshes) {
-			i.x += x;
-			i.y += y;
-			i.z += z;
+		if (FlxG.keys.pressed.UP)
+			view.camera.rotationX -= 1;
+		if (FlxG.keys.pressed.DOWN)
+			view.camera.rotationX += 1;
 
-			trace(i.x, i.y, i.z);
-		}
+		if (FlxG.keys.pressed.LEFT)
+			view.camera.rotationY -= 1;
+		if (FlxG.keys.pressed.RIGHT)
+			view.camera.rotationY += 1;
 	}
 
 	override function destroy() {
